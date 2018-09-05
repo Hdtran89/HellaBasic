@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="_token" content="{{csrf_token()}}" />
     <meta name="theme-color" content="#000000">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{!! asset('images/logo_size_invert.jpg') !!}"/>
     <link rel="stylesheet" href="{!! asset('css/main.css') !!}" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" 
@@ -26,10 +26,17 @@
         <!-- Signup Form -->
         <div>
           <form id="signup-form" method="post" action="/subscribe">
+            {!! csrf_field() !!}
             <input type="email" name="email" id="email" placeholder="Email Address" />
             <input type="submit" value="Sign Up" id="submit" />
           </form>
         </div>
+        @if(Session::has('message'))
+        <div class="alert alert-{{ Session::get('message-type') }} alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <i class="glyphicon glyphicon-{{ Session::get('message-type') == 'success' ? 'ok' : 'remove'}}"></i> {{ Session::get('message') }}
+        </div>
+        @endif
     <!-- Footer -->
         <footer id="footer">
           <ul class="icons">
@@ -87,15 +94,14 @@
         // Note: If you're *not* using AJAX, get rid of this event listener.
           $('#submit').click(function(event) {
             event.stopPropagation();
-            event.preventDefault();
             $.ajaxSetup({
-              headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}
+              headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             });
             $.ajax({
               url:"{{url('/subscribe')}}",
-              method:'post',
+              method:'POST',
               data:{
-                name: $("email").val(),
+                email: $("email").val(),
               },
               success: function(result){
                 // Hide message.
@@ -104,11 +110,7 @@
               // Disable submit.
                 $submit.disabled = true;
 
-              // Process form.
-              // Note: Doesn't actually do anything yet (other than report back with a "thank you"),
-              // but there's enough here to piece together a working AJAX submission call that does.
                 window.setTimeout(function() {
-
                   // Reset form.
                     $form.reset();
 
@@ -120,7 +122,12 @@
                     //$message._show('failure', 'Something went wrong. Please try again.');
 
                 }, 750);
-              }});
+              },
+              error: function(){
+                $message._show('Error', 'Failed to sign up, please try again.');
+              }
+            });
+            event.preventDefault();
           });
       })();
     </script>
