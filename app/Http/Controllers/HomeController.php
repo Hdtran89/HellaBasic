@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Newsletter;
 use Redirect;
+use Illuminate\Support\Facades\Input;
+use App\Subscriber;
 class HomeController extends Controller
 {
     public function index(Request $request){
@@ -13,13 +15,16 @@ class HomeController extends Controller
     }
 
     public function subscribe(Request $request){
-    	$email = $request->email;
-    	if(Newsletter::isSubscribed((string)$email)){
-			return Redirect::back()->with('message', "You have already sign up.");
-		} else {
-			Newsletter::subscribe((string)$email);
-			return Redirect::back();
-		}
     	
+    	if(!Newsletter::isSubscribed($request->email)){
+            if (!Subscriber::where('email', '=', Input::get('email'))->exists()) {
+                $subscriber = new \App\Subscriber;
+                $subscriber->email = $request->email;
+                $subscriber->save();
+                Newsletter::subscribe($request->email);
+                return Redirect::back();
+            }
+		}
+        return Redirect::back()->with('failure', "Failed signing up please try again.");
     }
 }

@@ -31,12 +31,18 @@
             <input type="submit" value="Sign Up" id="submit" />
           </form>
         </div>
-        @if(Session::has('message'))
+<!--         @if(Session::has('failure'))
         <div class="alert alert-{{ Session::get('message-type') }} alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
             <i class="glyphicon glyphicon-{{ Session::get('message-type') == 'success' ? 'ok' : 'remove'}}"></i> {{ Session::get('message') }}
         </div>
         @endif
+        @if(Session::has('success'))
+        <div class="alert alert-{{ Session::get('message-type') }} alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <i class="glyphicon glyphicon-{{ Session::get('message-type') == 'success' ? 'ok' : 'remove'}}"></i> {{ Session::get('message') }}
+        </div>
+        @endif -->
     <!-- Footer -->
         <footer id="footer">
           <ul class="icons">
@@ -92,43 +98,43 @@
 
         // Events.
         // Note: If you're *not* using AJAX, get rid of this event listener.
-          $('#submit').click(function(event) {
-            event.stopPropagation();
-            $.ajaxSetup({
-              headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-            });
-            $.ajax({
-              url:"{{url('/subscribe')}}",
-              method:'POST',
-              data:{
-                email: $("email").val(),
-              },
-              success: function(result){
-                // Hide message.
-                $message._hide();
+          //  $('#submit').click(function(event) {
+          // //   event.stopPropagation();
+          // //   $.ajaxSetup({
+          // //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+          // //   });
+          // //   $.ajax({
+          // //     url:"{{url('/subscribe')}}",
+          // //     method:'POST',
+          // //     data:{
+          // //       email: $("email").val(),
+          // //     },
+          // //     success: function(result){
+          // //       // Hide message.
+          //        $message._hide();
 
-              // Disable submit.
-                $submit.disabled = true;
+          // //     // Disable submit.
+          //        $submit.disabled = true;
 
-                window.setTimeout(function() {
-                  // Reset form.
-                    $form.reset();
+          //       window.setTimeout(function() {
+          //         // Reset form.
+          //           $form.reset();
 
-                  // Enable submit.
-                    $submit.disabled = false;
+          //         // Enable submit.
+          //           $submit.disabled = false;
 
-                  // Show message.
-                    $message._show('success', 'Thank you!');
-                    //$message._show('failure', 'Something went wrong. Please try again.');
+          //         // Show message.
+          //           $message._show('success', 'Thank you!');
+          //           //$message._show('failure', 'Something went wrong. Please try again.');
 
-                }, 750);
-              },
-              error: function(){
-                $message._show('Error', 'Failed to sign up, please try again.');
-              }
-            });
-            event.preventDefault();
-          });
+          //       }, 750);
+          // //     },
+          // //     error: function(){
+          // //       $message._show('Error', 'Failed to sign up, please try again.');
+          // //     }
+          // //   });
+          // //   event.preventDefault();
+          //  });
       })();
     </script>
   </body>
