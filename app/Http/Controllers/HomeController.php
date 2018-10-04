@@ -22,7 +22,7 @@ class HomeController extends Controller
                 $subscriber->email = $request->email;
                 $subscriber->save();
                 Newsletter::subscribe($request->email);
-                return Redirect::back();
+                return view('home');
             }
 		}
         return Redirect::back()->with('failure', "Failed signing up please try again.");

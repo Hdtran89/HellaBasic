@@ -26,7 +26,8 @@
         <!-- Signup Form -->
         <div>
           <form id="signup-form" method="post" action="/subscribe">
-            {!! csrf_field() !!}
+            <!-- {{ csrf_field() }} -->
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="email" name="email" id="email" placeholder="Email Address" />
             <input type="submit" value="Sign Up" id="submit" />
           </form>
@@ -98,43 +99,45 @@
 
         // Events.
         // Note: If you're *not* using AJAX, get rid of this event listener.
-          //  $('#submit').click(function(event) {
-          // //   event.stopPropagation();
-          // //   $.ajaxSetup({
-          // //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-          // //   });
-          // //   $.ajax({
-          // //     url:"{{url('/subscribe')}}",
-          // //     method:'POST',
-          // //     data:{
-          // //       email: $("email").val(),
-          // //     },
-          // //     success: function(result){
-          // //       // Hide message.
-          //        $message._hide();
+           $('#submit').click(function(event) {
+            event.stopPropagation();
+            $.ajaxSetup({
+              headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            });
+            var emailval=$('#email').val();
+            console.log(emailval);
+            $.ajax({
+              url:"{{url('/subscribe')}}",
+              method:'POST',
+              data:{
+                email: emailval,
+              },
+              success: function(result){
+          //       // Hide message.
+                 $message._hide();
 
-          // //     // Disable submit.
-          //        $submit.disabled = true;
+          //     // Disable submit.
+                 $submit.disabled = true;
 
-          //       window.setTimeout(function() {
-          //         // Reset form.
-          //           $form.reset();
+                window.setTimeout(function() {
+                  // Reset form.
+                    $form.reset();
 
-          //         // Enable submit.
-          //           $submit.disabled = false;
+                  // Enable submit.
+                    $submit.disabled = false;
 
-          //         // Show message.
-          //           $message._show('success', 'Thank you!');
-          //           //$message._show('failure', 'Something went wrong. Please try again.');
+                  // Show message.
+                    $message._show('success', 'Thank you!');
+                    //$message._show('failure', 'Something went wrong. Please try again.');
 
-          //       }, 750);
-          // //     },
-          // //     error: function(){
-          // //       $message._show('Error', 'Failed to sign up, please try again.');
-          // //     }
-          // //   });
-          // //   event.preventDefault();
-          //  });
+                }, 750);
+              },
+              error: function(){
+                $message._show('Error', 'Failed to sign up, please try again.');
+              }
+            });
+            event.preventDefault();
+           });
       })();
     </script>
   </body>
