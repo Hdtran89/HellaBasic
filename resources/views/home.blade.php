@@ -105,7 +105,6 @@
               headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             });
             var emailval=$('#email').val();
-            console.log(emailval);
             $.ajax({
               url:"{{url('/subscribe')}}",
               method:'POST',
